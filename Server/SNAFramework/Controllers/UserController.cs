@@ -20,7 +20,7 @@ using SNAFramework.Models;
 namespace SNAFramework.Controllers
 {
     //Default security to only request with JWT Bearer Tokens
-    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Developer")]
+    //[Authorize(AuthenticationSchemes = "Bearer", Roles = "Developer")]
     [Route("api/user")]
     public class UserController : SnaBaseController
     {
