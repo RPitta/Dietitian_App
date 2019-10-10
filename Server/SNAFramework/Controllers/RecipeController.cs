@@ -79,6 +79,7 @@ namespace SNAFramework.Controllers
             }
         }
 
+        /*
         [HttpPost]
         [Route("addrecipe")]
         public async Task<IActionResult> addrecipe([FromBody]string recipeobj)
@@ -88,8 +89,8 @@ namespace SNAFramework.Controllers
 
             try
             {
-               // Add recipe to the Recipe table (model)
-               // Return a confirmation message
+                // Add recipe to the Recipe table (model)
+                // Return a confirmation message
 
             }
             catch (Exception e)
@@ -97,7 +98,7 @@ namespace SNAFramework.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
         }
-
+        
         [HttpPost]
         [Route("editrecipe")]
         public async Task<IActionResult> editrecipe([FromBody]string recipeobj)
@@ -106,6 +107,11 @@ namespace SNAFramework.Controllers
             try
             {
                 // Find recipe the Recipe table (model)
+                if (recipeobj.RecipeId == null)
+                {
+                    throw new Exception("wrong information");
+                }
+                Recipe recipe = _context.Recipe.Where(r => r.RecipeId.Equals(recipeobj.RecipeId)).FirstOrDefault();
                 // Update the recipe with the new information
                 // Save changes
             }
@@ -114,7 +120,7 @@ namespace SNAFramework.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
         }
-
+        
         [HttpPost]
         [Route("removerecipe")]
         public async Task<IActionResult> removerecipe([FromBody]string recipeobj)
@@ -131,5 +137,6 @@ namespace SNAFramework.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
         }
+    */
     }
 }
