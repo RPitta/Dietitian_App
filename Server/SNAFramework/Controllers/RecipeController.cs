@@ -79,17 +79,24 @@ namespace SNAFramework.Controllers
             }
         }
 
-        /*
+        
         [HttpPost]
         [Route("addrecipe")]
-        public async Task<IActionResult> addrecipe([FromBody]string recipeobj)
+        public async Task<IActionResult> addrecipe([FromBody]NewRecipe recipeobj)
         {
             // Get recipeobj containing recipe info
             // Create a new entry in the Recipe table (model) with given info
-
+            Recipe newrecipe = new Recipe();
+            {
+                newrecipe.Name = recipeobj.Name;
+                newrecipe.PicFilePath = recipeobj.PicFilePath;
+                newrecipe.Calories = recipeobj.Calories;
+                newrecipe.PrepTime = recipeobj.PrepTime;
+            }
             try
             {
                 // Add recipe to the Recipe table (model)
+                return Content(Newtonsoft.Json.JsonConvert.SerializeObject(newrecipe));
                 // Return a confirmation message
 
             }
@@ -98,7 +105,7 @@ namespace SNAFramework.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
         }
-        
+        /*
         [HttpPost]
         [Route("editrecipe")]
         public async Task<IActionResult> editrecipe([FromBody]string recipeobj)
@@ -137,6 +144,14 @@ namespace SNAFramework.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
         }
-    */
+        */
+
+        public class NewRecipe
+        {
+            public string Name;
+            public string PicFilePath;
+            public int Calories;
+            public int PrepTime;
+        }
     }
 }
