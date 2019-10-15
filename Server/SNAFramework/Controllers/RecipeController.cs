@@ -96,7 +96,9 @@ namespace SNAFramework.Controllers
             try
             {
                 // Add recipe to the Recipe table (model)
-                return Content(Newtonsoft.Json.JsonConvert.SerializeObject(newrecipe));
+                _context.Recipe.Add(newrecipe);
+                _context.SaveChanges();
+                //return Content(Newtonsoft.Json.JsonConvert.SerializeObject(newrecipe));
                 // Return a confirmation message
 
             }
@@ -104,6 +106,8 @@ namespace SNAFramework.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
+
+            return StatusCode(StatusCodes.Status200OK, JsonConvert.SerializeObject(new returnMsg { message = "Recipe added." }));
         }
         /*
         [HttpPost]

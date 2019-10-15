@@ -20,7 +20,7 @@ using SNAFramework.Models;
 namespace SNAFramework.Controllers
 {
     //Default security to only request with JWT Bearer Tokens
-    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Developer")]
+    //[Authorize(AuthenticationSchemes = "Bearer", Roles = "Developer")]
     [Route("api/group")]
     public class GroupController : SnaBaseController
     {
@@ -84,6 +84,47 @@ namespace SNAFramework.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
+        }
+
+        [HttpGet]
+        [Route("getgroupmembers")]
+        public async Task<IActionResult> getgroupmembers([FromQuery]string groupId)
+        {
+            try
+            {
+                var users = _context.UserProfile.Select(d => new
+                {
+                    d.GroupId,
+                    d.FirstName,
+                    d.LastName
+                }).Where(q => q.GroupId.ToString().Equals(groupId)).ToList();
+                return Content(Newtonsoft.Json.JsonConvert.SerializeObject(users));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("removegroupmember")]
+        public async Task<IActionResult> removegroupmember([FromQuery]UserProfile userobj)
+        {
+            try
+            {
+                var user = _context.UserProfile.Where(r => r.GroupId.Equals(userobj.GroupId)).FirstOrDefault();
+
+                user.GroupId = null;
+                _context.Update(user);
+
+                _context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+
+            return StatusCode(StatusCodes.Status200OK, JsonConvert.SerializeObject(new returnMsg { message = "Patient removed from group." }));
         }
     }
 }
