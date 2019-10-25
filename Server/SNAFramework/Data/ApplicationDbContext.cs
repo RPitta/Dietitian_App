@@ -12,6 +12,8 @@ namespace SNAFramework.Data
         public virtual DbSet<Group> Group { get; set; }
         public virtual DbSet<Message> Message { get; set; }
         public virtual DbSet<Recipe> Recipe { get; set; }
+        public virtual DbSet<RecipeGroupRef> RecipeGroupRef { get; set; }
+        public virtual DbSet<UserFeedback> UserFeedback { get; set; }
 
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)

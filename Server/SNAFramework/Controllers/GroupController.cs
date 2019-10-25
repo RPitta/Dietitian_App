@@ -150,5 +150,63 @@ namespace SNAFramework.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
         }
+
+        // get a list of patients for a group, containing their FirstName, 
+        // LastName, Email, and time since their last UserFeedback post
+        // Format of time?
+        /**/
+        [HttpGet]
+        [Route("getGroupPatients")]
+        public async Task<IActionResult> getGroupPatients([FromQuery] string id)
+        {
+            try
+            {
+                var users = _context.UserProfile.Select(d => new
+                {
+                    d.GroupId,
+                    d.FirstName,
+                    d.LastName,
+                    d.Email,
+                    userId = _context.UserProfile.Where(u => u.Id.ToString().Equals(id))
+                                          .Select(x => x.Id)
+                                          .FirstOrDefault(),
+                    timeSinceLastPost = _context.UserFeedback.Select(x => new
+                    {
+                        // timeSinceLastPost is in days.hours:hours:minutes TimeSpan format
+                        timesince = (TimeSpan)DateTime.Now.Subtract(x.Timestamp),
+                        x.Rating
+
+                    }).Where(y => y.UserId.ToString().Equals(userId))
+
+                }).Where(q => q.GroupId.ToString().Equals(groupId)).ToList();
+                return Content(Newtonsoft.Json.JsonConvert.SerializeObject(users));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("test")]
+        public async Task<IActionResult> test()
+        {
+            try
+            {
+                var users = _context.UserFeedback.Select(d => new
+                {
+                    // timesince is in days.hours:hours:minutes
+                    timesince = (TimeSpan)DateTime.Now.Subtract(d.Timestamp),
+                    //timesince2 = DateTime.timesince.ToString("")
+                    d.Rating
+
+                });
+                return Content(Newtonsoft.Json.JsonConvert.SerializeObject(users));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+        }
     }
 }

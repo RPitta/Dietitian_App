@@ -307,6 +307,43 @@ namespace SNAFramework.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("getUserFullname")]
+        public async Task<IActionResult> getUserFullname([FromQuery]string id)
+        {
+            try
+            {
+                var fullName = _context.UserProfile.Where(q => q.Id.ToString().Equals(id))
+                                                   .Select(s => s.FirstName + ' ' + s.LastName)
+                                                   .FirstOrDefault();
+                return Content(Newtonsoft.Json.JsonConvert.SerializeObject(fullName));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, JsonConvert.SerializeObject(new returnMsg { message = e.Message }));
+            }
+
+        }
+
+        /*
+        [HttpGet]
+        [Route("getDieticianFullname")]
+        public async Task<IActionResult> getUserFullname([FromQuery]string id)
+        {
+            try
+            {
+                var fullName = _context.UserProfile.Where(q => q.Id.ToString().Equals(id))
+                                                   .Select(s => s.FirstName + ' ' + s.LastName)
+                                                   .FirstOrDefault();
+                return Content(Newtonsoft.Json.JsonConvert.SerializeObject(fullName));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, JsonConvert.SerializeObject(new returnMsg { message = e.Message }));
+            }
+
+        }*/
+
         //models
         public class changepassword
         {

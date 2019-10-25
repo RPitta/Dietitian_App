@@ -79,7 +79,39 @@ namespace SNAFramework.Controllers
             }
         }
 
-        
+        /*
+        [HttpGet]
+        [Route("getRecipeOfTheWeek")]
+        public async Task<IActionResult> getRecipeOfTheWeek()
+        {
+            try
+            {
+                var recipe = _context.Recipe.Join(
+                    _context.RecipeGroupRef,
+                    u => u.Id,
+                    g => g.RecipeId,
+                    (u, g) => new
+                    {
+                        u.Id,
+                        u.Name,
+                        u.PrepTime,
+                        u.Calories,
+                        // u.Servings   Need to update DB
+                        rating = u.UserFeedback.Where(f => f.RecipeId == u.Id).Select(x => new
+                        {
+                            x.Rating
+                        })
+                    }).Where(s => s.IsSpecial = 1);
+
+                return Ok(JsonConvert.SerializeObject(recipe));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+        }*/
+
+
         [HttpPost]
         [Route("addrecipe")]
         public async Task<IActionResult> addrecipe([FromBody]NewRecipe recipeobj)
