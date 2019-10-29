@@ -76,6 +76,7 @@ namespace SNAFramework.Controllers
                     d.LastName,
                     d.Email,
                     d.PhoneNumber,
+                    d.GroupId,
                 }).Where(q => q.Id.ToString().Equals(id)).FirstOrDefault();
                 return Content(Newtonsoft.Json.JsonConvert.SerializeObject(user));
             }
@@ -323,6 +324,82 @@ namespace SNAFramework.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, JsonConvert.SerializeObject(new returnMsg { message = e.Message }));
             }
 
+        }
+
+        [HttpGet]
+        [Route("getDietitianName")]
+        public async Task<IActionResult> getDietitianName([FromQuery]string patientId)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(patientId))
+                {
+                    var name = _context.UserProfile.Join(
+                        _context.Group,
+                        u => u.Id,
+                        g => g.DieticianId,
+                        (u, g) => new
+                        {
+                            u.FirstName,
+                            u.LastName
+                        }).Distinct();
+
+                    return Ok(JsonConvert.SerializeObject(name));
+                }
+                else
+                {
+                    /*
+                    var dietitianId = _context.Group.Where(g => g.Id.ToString().Equals(groupId))
+                                                    .Select(s => s.DieticianId)
+                                                    .FirstOrDefault();
+
+                    var name = _context.UserProfile.Where(q => q.Id.ToString().Equals(dietitianId.ToString()))
+                                                   .Select(d => new { d.FirstName, d.LastName })
+                                                   .FirstOrDefault();*/
+
+                    var groupId = _context.UserProfile.Where(s => s.Id.ToString().Equals(patientId))
+                                                      .Select(g => g.GroupId)
+                                                      .FirstOrDefault();
+
+                    var dietitianId = _context.Group.Where(g => g.Id.ToString().Equals(groupId.ToString()))
+                                                    .Select(s => s.DieticianId)
+                                                    .FirstOrDefault();
+
+                    var name = _context.UserProfile.Where(q => q.Id.ToString().Equals(dietitianId.ToString()))
+                                                   .Select(d => new { d.FirstName, d.LastName })
+                                                   .FirstOrDefault();
+
+                    return Ok(JsonConvert.SerializeObject(name));
+                }
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("getdietitiangroups")]
+        public async Task<IActionResult> getdietitiangroups()
+        {
+            try
+            {
+                var dietitianGroups = _context.UserProfile.Join(
+                    _context.Group,
+                    u => u.Id,
+                    g => g.DieticianId,
+                    (u, g) => new
+                    {
+                        dietitianName = u.FirstName + " " + u.LastName,
+                        group = g.Id
+                    });
+
+                return Ok(JsonConvert.SerializeObject(dietitianGroups));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
         }
 
         /*

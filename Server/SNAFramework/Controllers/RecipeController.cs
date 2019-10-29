@@ -79,13 +79,33 @@ namespace SNAFramework.Controllers
             }
         }
 
-        /*
-        [HttpGet]
+        
+        /*[HttpGet]
         [Route("getRecipeOfTheWeek")]
-        public async Task<IActionResult> getRecipeOfTheWeek()
+        public async Task<IActionResult> getRecipeOfTheWeek([FromQuery]string groupId)
         {
             try
             {
+                var recipeId = _context.RecipeGroupRef.Where(s => s.GroupId.ToString().Equals(groupId) 
+                                                                  && s.IsSpecial == true)
+                                                      .Select(g => g.RecipeId)
+                                                      .FirstOrDefault();
+
+                var recipe = _context.Recipe.Where(s => s.Id.ToString().Equals(recipeId.ToString()))
+                                                      .Select(g => new
+                                                      {
+                                                          g.Id,
+                                                          g.Name,
+                                                          g.PrepTime,
+                                                          g.Calories,
+                                                          g.Servings,
+                                                          rating = g.UserFeedback.Where(f => f.RecipeId == u.Id).Select(x => new
+                                                          {
+                                                              x.Rating
+                                                          })
+                                                      })
+                                                      .FirstOrDefault(); 
+                
                 var recipe = _context.Recipe.Join(
                     _context.RecipeGroupRef,
                     u => u.Id,

@@ -154,7 +154,7 @@ namespace SNAFramework.Controllers
         // get a list of patients for a group, containing their FirstName, 
         // LastName, Email, and time since their last UserFeedback post
         // Format of time?
-        /**/
+        /*
         [HttpGet]
         [Route("getGroupPatients")]
         public async Task<IActionResult> getGroupPatients([FromQuery] string id)
@@ -186,7 +186,7 @@ namespace SNAFramework.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
         }
-
+        */
         [HttpGet]
         [Route("test")]
         public async Task<IActionResult> test()
